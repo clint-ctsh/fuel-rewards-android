@@ -1,34 +1,28 @@
 package com.fuelrewards;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import java.util.List;
+import com.fuelrewards.storage.UserStorage;
 
 public class MainActivity extends AppCompatActivity {
+
+    Button mSubmitTransactionButton;
+    Button mListTransactionsButton;
+    Button mLoginButton;
+    Button mSignupButton;
+    Button mProfileButton;
+    Button mLogoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button mSubmitTransactionButton = (Button) findViewById(R.id.submit_transaction_button);
+        mSubmitTransactionButton = (Button) findViewById(R.id.submit_transaction_button);
         mSubmitTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -37,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button mListTransactionsButton = (Button) findViewById(R.id.list_transactions_button);
+        mListTransactionsButton = (Button) findViewById(R.id.list_transactions_button);
         mListTransactionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button mLoginButton = (Button) findViewById(R.id.login_button);
+        mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button mSignupButton = (Button) findViewById(R.id.signup_buttotn);
+        mSignupButton = (Button) findViewById(R.id.signup_button);
         mSignupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,5 +57,55 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        mProfileButton = (Button) findViewById(R.id.profile_button);
+        mProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mLogoutButton = (Button) findViewById(R.id.logout_button);
+        mLogoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserStorage.logout();
+                reloadPage();
+            }
+        });
+    }
+
+    private void reloadPage() {
+        if (UserStorage.isUserLoggedIn()) {
+
+            // hide login/signup because user already logged in
+            mLoginButton.setVisibility(View.GONE);
+            mSignupButton.setVisibility(View.GONE);
+
+            // show transaction and profile functionality
+            mListTransactionsButton.setVisibility(View.VISIBLE);
+            mSubmitTransactionButton.setVisibility(View.VISIBLE);
+            mProfileButton.setVisibility(View.VISIBLE);
+            mLogoutButton.setVisibility(View.VISIBLE);
+        } else {
+
+            // user not logged, so show login/signup
+            mLoginButton.setVisibility(View.VISIBLE);
+            mSignupButton.setVisibility(View.VISIBLE);
+
+            // if user not logged in, hide transaction and profile functionality
+            mListTransactionsButton.setVisibility(View.GONE);
+            mSubmitTransactionButton.setVisibility(View.GONE);
+            mProfileButton.setVisibility(View.GONE);
+            mLogoutButton.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reloadPage();
     }
 }

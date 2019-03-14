@@ -20,27 +20,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.fuelrewards.adapters.UserAdapter;
+import com.fuelrewards.exceptions.NetworkException;
+import com.fuelrewards.models.User;
+import com.fuelrewards.storage.UserStorage;
+
 import java.util.List;
 
 public class SignupActivity extends AppCompatActivity {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private SignupActivity.UserLoginTask mAuthTask = null;
+    private SignupActivity.UserSignupTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
+    private EditText mFirstNameView;
+    private EditText mLastNameView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private TextView mErrorText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +48,13 @@ public class SignupActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        // Set up the login form.
+        mErrorText = (TextView) findViewById(R.id.error_textview);
+
+        // Set up the signup form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mFirstNameView = (EditText) findViewById(R.id.first_name);
+        mLastNameView = (EditText) findViewById(R.id.last_name);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_signup_button);
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -100,10 +92,14 @@ public class SignupActivity extends AppCompatActivity {
 
         // Reset errors.
         mEmailView.setError(null);
+        mFirstNameView.setError(null);
+        mLastNameView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
+        String firstName = mFirstNameView.getText().toString();
+        String lastName = mLastNameView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -127,6 +123,18 @@ public class SignupActivity extends AppCompatActivity {
             cancel = true;
         }
 
+        // Check for a valid names.
+        if (TextUtils.isEmpty(firstName)) {
+            mFirstNameView.setError(getString(R.string.error_field_required));
+            cancel = true;
+        }
+
+        // Check for a valid names.
+        if (TextUtils.isEmpty(lastName)) {
+            mLastNameView.setError(getString(R.string.error_field_required));
+            cancel = true;
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -135,18 +143,16 @@ public class SignupActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new SignupActivity.UserLoginTask(email, password);
+            mAuthTask = new SignupActivity.UserSignupTask(email, firstName, lastName, password);
             mAuthTask.execute((Void) null);
         }
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
@@ -199,37 +205,36 @@ public class SignupActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
+        private final String mFirstName;
+        private final String mLastName;
         private final String mPassword;
 
-        UserLoginTask(String email, String password) {
+        UserSignupTask(String email, String firstName, String lastName, String password) {
             mEmail = email;
+            mFirstName = firstName;
+            mLastName = lastName;
             mPassword = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+
+            User newUser = null;
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                newUser = UserAdapter.signup(mEmail, mFirstName, mLastName, mPassword, SignupActivity.this);
+            } catch (NetworkException e) {
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
+            if (newUser != null) {
+                UserStorage.login(newUser); // store user
             }
 
-            // TODO: register the new account here.
-            return true;
+            return newUser != null;
         }
 
         @Override
@@ -238,10 +243,9 @@ public class SignupActivity extends AppCompatActivity {
             showProgress(false);
 
             if (success) {
-                finish();
+                finish(); // return to main page
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                mErrorText.setError("An error occurred, please try again later");
             }
         }
 

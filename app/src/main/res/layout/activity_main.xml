@@ -33,7 +33,7 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/signup_buttotn"
+        android:id="@+id/signup_button"
         style="?android:textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,6 +57,24 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/submit_transaction_activity"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/profile_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/profile_activity"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/logout_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/logout_activity"
         android:textStyle="bold" />
 
 </LinearLayout>
