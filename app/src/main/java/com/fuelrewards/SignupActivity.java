@@ -64,8 +64,8 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mLoginFormView = findViewById(R.id.signup_form);
+        mProgressView = findViewById(R.id.signup_progress);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class SignupActivity extends AppCompatActivity {
         mLastNameView.setError(null);
         mPasswordView.setError(null);
 
-        // Store values at the time of the login attempt.
+        // Store values at the time of the signup attempt.
         String email = mEmailView.getText().toString();
         String firstName = mFirstNameView.getText().toString();
         String lastName = mLastNameView.getText().toString();
@@ -192,15 +192,6 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(SignupActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -225,13 +216,13 @@ public class SignupActivity extends AppCompatActivity {
             User newUser = null;
 
             try {
-                newUser = UserAdapter.signup(mEmail, mFirstName, mLastName, mPassword, SignupActivity.this);
+                newUser = UserAdapter.getInstance().signup(mEmail, mFirstName, mLastName, mPassword);
             } catch (NetworkException e) {
                 return false;
             }
 
             if (newUser != null) {
-                UserStorage.login(newUser); // store user
+                UserStorage.getInstance().login(newUser); // store user
             }
 
             return newUser != null;

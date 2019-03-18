@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.fuelrewards.adapters.TransactionAdapter;
+import com.fuelrewards.adapters.UserAdapter;
 import com.fuelrewards.storage.UserStorage;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // initialize adapters
+        UserAdapter.initialize(MainActivity.this);
+        TransactionAdapter.initialize(MainActivity.this);
 
         mSubmitTransactionButton = (Button) findViewById(R.id.submit_transaction_button);
         mSubmitTransactionButton.setOnClickListener(new View.OnClickListener() {
@@ -71,14 +77,14 @@ public class MainActivity extends AppCompatActivity {
         mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserStorage.logout();
+                UserStorage.getInstance().logout();
                 reloadPage();
             }
         });
     }
 
     private void reloadPage() {
-        if (UserStorage.isUserLoggedIn()) {
+        if (UserStorage.getInstance().isUserLoggedIn()) {
 
             // hide login/signup because user already logged in
             mLoginButton.setVisibility(View.GONE);

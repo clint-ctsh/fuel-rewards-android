@@ -21,24 +21,27 @@ import java.util.Map;
 
 public class UserAdapter {
 
-    public static User fetchProfile(String email, String password) throws NetworkException {
+    private static UserAdapter userAdapter;
+    private RequestQueue queue;
 
-        return null;
+    protected UserAdapter(Activity activity) {
+        queue = Volley.newRequestQueue(activity);
     }
 
-    public static User updateProfile(User user) throws NetworkException {
-
-        return null;
+    public static void initialize(Activity activity) {
+        userAdapter = new UserAdapter(activity);
     }
 
-    public static User login(String email, String password, Activity activity) throws NetworkException {
+    public static UserAdapter getInstance() {
+        return userAdapter;
+    }
+
+    public User login(String email, String password) throws NetworkException {
 
         try {
             JSONObject jsonRequest = new JSONObject();
             jsonRequest.put("email", email);
             jsonRequest.put("password", password);
-
-            RequestQueue queue = Volley.newRequestQueue(activity);
 
             RequestFuture<JSONObject> future = RequestFuture.newFuture();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -69,8 +72,8 @@ public class UserAdapter {
         }
     }
 
-    public static User signup(String email, String firstName,
-                              String lastName, String password, Activity activity) throws NetworkException {
+    public User signup(String email, String firstName,
+                              String lastName, String password) throws NetworkException {
 
         try {
             JSONObject jsonRequest = new JSONObject();
@@ -78,8 +81,6 @@ public class UserAdapter {
             jsonRequest.put("firstName", firstName);
             jsonRequest.put("lastName", lastName);
             jsonRequest.put("password", password);
-
-            RequestQueue queue = Volley.newRequestQueue(activity);
 
             RequestFuture<JSONObject> future = RequestFuture.newFuture();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest

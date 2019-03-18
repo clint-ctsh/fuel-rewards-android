@@ -5,15 +5,16 @@ import java.sql.Date;
 public class Transaction {
 
     private Long id;
-    private Date transactionDate;
+    private String transactionDate;
+    private String transactionName;
     private Double transactionAmount;
-    private String cardNumber;
 
-    public Transaction(Long id, Date transactionDate, Double transactionAmount, String cardNumber) {
+    public Transaction(Long id, String transactionDate, String transactionName,
+                       Double transactionAmount) {
         this.id = id;
         this.transactionDate = transactionDate;
+        this.transactionName = transactionName;
         this.transactionAmount = transactionAmount;
-        this.cardNumber = cardNumber;
     }
 
     public Long getId() {
@@ -24,11 +25,11 @@ public class Transaction {
         this.id = id;
     }
 
-    public Date getTransactionDate() {
+    public String getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(Date transactionDate) {
+    public void setTransactionDate(String transactionDate) {
         this.transactionDate = transactionDate;
     }
 
@@ -40,11 +41,11 @@ public class Transaction {
         this.transactionAmount = transactionAmount;
     }
 
-    public String getCardNumber() {
-        return cardNumber;
+    public String getTransactionName() {
+        return transactionName;
     }
 
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
+    public void setTransactionName(String transactionName) {
+        this.transactionName = transactionName;
     }
 }

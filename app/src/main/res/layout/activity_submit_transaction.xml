@@ -20,4 +20,75 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textSize="30sp"
         tools:text="Submit Transaction" />
+
+    <!-- Signup progress -->
+    <ProgressBar
+        android:id="@+id/submit_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/submit_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/transaction_submit_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/transaction_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Transaction Name"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/transaction_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Transaction Amount"
+                    android:imeActionId="6"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/error_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FF0000"/>
+
+            <Button
+                android:id="@+id/submit_transaction_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Submit transaction"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

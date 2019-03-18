@@ -1,24 +1,41 @@
 package com.fuelrewards.storage;
 
+import android.app.Activity;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import com.fuelrewards.adapters.UserAdapter;
 import com.fuelrewards.models.User;
 
 public class UserStorage {
 
-    private static User user = null;
+    private User user = null;
+    private static UserStorage userStorage;
 
-    public static void login(User loginUser) {
+    protected UserStorage() { }
+
+    public static UserStorage getInstance() {
+
+        if (userStorage == null)
+            userStorage = new UserStorage();
+
+        return userStorage;
+    }
+
+
+    public void login(User loginUser) {
         user = loginUser;
     }
 
-    public static void logout() {
+    public void logout() {
         user = null;
     }
 
-    public static boolean isUserLoggedIn() {
+    public boolean isUserLoggedIn() {
         return user != null;
     }
 
-    public static User getUser() {
+    public User getUser() {
         return user;
     }
 }
