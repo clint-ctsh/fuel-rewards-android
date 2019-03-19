@@ -1,6 +1,8 @@
 package com.fuelrewards.adapters;
 
 import android.app.Activity;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -9,6 +11,8 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
+import com.fuelrewards.ListTransactionsActivity;
+import com.fuelrewards.R;
 import com.fuelrewards.common.Constants;
 import com.fuelrewards.exceptions.NetworkException;
 import com.fuelrewards.models.Transaction;
@@ -115,5 +119,20 @@ public class TransactionAdapter {
             e.printStackTrace();
             throw new NetworkException("Error during get all transactions", e);
         }
+    }
+
+    public void loadTransactionsAsync() {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+
+               try {
+                   getAllTransactions();
+               } catch (NetworkException e) {
+                   e.printStackTrace();
+               }
+            }
+        };
+        thread.start();
     }
 }

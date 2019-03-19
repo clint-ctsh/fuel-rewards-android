@@ -7,8 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.fuelrewards.common.Constants;
+import com.fuelrewards.models.Transaction;
 import com.fuelrewards.models.User;
+import com.fuelrewards.storage.TransactionStorage;
 import com.fuelrewards.storage.UserStorage;
+
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -30,6 +36,21 @@ public class ProfileActivity extends AppCompatActivity {
 
         TextView mEmailText = (TextView) findViewById(R.id.email_text);
         mEmailText.setText(user.getEmail());
+
+        List<Transaction> allTransactions = TransactionStorage.getInstance().getTransactions();
+        double totalSpending = 0;
+
+        for (Transaction t : allTransactions) {
+            totalSpending += t.getTransactionAmount();
+        }
+
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        TextView mTotalSpendingText = (TextView) findViewById(R.id.total_spending_text);
+        mTotalSpendingText.setText("$"+df.format(totalSpending));
+
+        TextView mRewardsText = (TextView) findViewById(R.id.rewards_text);
+        mRewardsText.setText("$"+df.format(totalSpending * Constants.REWARD_PERCENTAGE_PERCENT));
     }
 
     @Override

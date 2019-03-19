@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
         UserAdapter.initialize(MainActivity.this);
         TransactionAdapter.initialize(MainActivity.this);
 
+        TransactionAdapter.getInstance().loadTransactionsAsync();  // load transactions at start
+
         mSubmitTransactionButton = (Button) findViewById(R.id.submit_transaction_button);
         mSubmitTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
