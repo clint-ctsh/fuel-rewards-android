@@ -48,9 +48,13 @@ public class TransactionAdapter {
 
     public Transaction submitTransaction(String name, double amount) throws NetworkException {
         try {
+
+            String cardNumber = UserStorage.getInstance().getUser().getCardNumber();
+
             JSONObject jsonRequest = new JSONObject();
             jsonRequest.put("name", name);
             jsonRequest.put("amount", amount);
+            jsonRequest.put("cardNumber", cardNumber);
 
             RequestFuture<JSONObject> future = RequestFuture.newFuture();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -81,9 +85,17 @@ public class TransactionAdapter {
 
     public List<Transaction> getAllTransactions() throws NetworkException {
         try {
+
+            if (!UserStorage.getInstance().isUserLoggedIn()) {
+                return new ArrayList<>();
+            }
+
+            String cardNumber = UserStorage.getInstance().getUser().getCardNumber();
+
             RequestFuture<JSONArray> future = RequestFuture.newFuture();
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
-                    (Request.Method.GET, Constants.GET_ALL_TRANSACTIONS_URL, null, future, future)
+                    (Request.Method.GET, Constants.GET_ALL_TRANSACTIONS_URL + "?cardNumber=" + cardNumber,
+                            null, future, future)
             {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
